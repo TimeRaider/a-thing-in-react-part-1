@@ -7,11 +7,7 @@ function App() {
 
   const dataFiltered = useMemo(
     () =>
-      data.filter((item) =>
-        item.title
-          .toLocaleLowerCase()
-          .includes(search.toLocaleLowerCase().trim())
-      ),
+      data.filter((item) => item.title.toLocaleLowerCase().includes(search)),
     [search]
   );
 

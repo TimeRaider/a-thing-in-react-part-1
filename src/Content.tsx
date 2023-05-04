@@ -10,7 +10,7 @@ type Props = {
 
 export function Content({ data, isOpen }: Props) {
   const refRenderCount = useRef(0);
-  const [ids, setIds] = useState<Props['data']['id'][]>([]);
+  const [ids, setIds] = useState<Props['data'][number]['id'][]>([]);
 
   const toggleId = useCallback(
     (id: string) =>

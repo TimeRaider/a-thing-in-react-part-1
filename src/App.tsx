@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, MouseEvent } from 'react';
+import { useCallback, useMemo, useState, ChangeEvent } from 'react';
 import { Content } from './Content';
 import { data } from './data';
 
@@ -8,11 +8,7 @@ function App() {
 
   const dataFiltered = useMemo(
     () =>
-      data.filter((item) =>
-        item.title
-          .toLocaleLowerCase()
-          .includes(search.toLocaleLowerCase().trim())
-      ),
+      data.filter((item) => item.title.toLocaleLowerCase().includes(search)),
     [search]
   );
 
@@ -24,22 +20,20 @@ function App() {
     []
   );
 
+  const onSearch = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.toLocaleLowerCase().trim();
+    if (value) {
+      setIds(data.map((item) => item.id));
+    } else {
+      setIds([]);
+    }
+    setSearch(value);
+  }, []);
+
   return (
     <>
       <div>
-        <input
-          type="text"
-          placeholder="Search"
-          onChange={(e) => {
-            const { value } = e.target;
-            if (value) {
-              setIds(data.map((item) => item.id));
-            } else {
-              setIds([]);
-            }
-            setSearch(value);
-          }}
-        />
+        <input type="text" placeholder="Search" onChange={onSearch} />
       </div>
       <Content data={dataFiltered} openIds={ids} onRowClick={toggleId} />
     </>

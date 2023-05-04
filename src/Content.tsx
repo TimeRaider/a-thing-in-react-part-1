@@ -17,22 +17,18 @@ export function Content({ data, isOpen }: Props) {
   const refIds = useRef<Props['data'][number]['id'][]>();
 
   if (refData.current !== data) {
-    refIds.current = isOpen ? data.map((item) => item.id) : [];
+    refIds.current = [];
     refData.current = data;
   }
 
-  const toggleId = useCallback(
-    (id: string) => {
-      if (refIds.current?.includes(id)) {
-        refIds.current = refIds.current.filter((i) => i !== id);
-      } else {
-        refIds.current?.push(id);
-      }
-      forceRerender();
-    },
-
-    []
-  );
+  const toggleId = useCallback((id: string) => {
+    if (refIds.current?.includes(id)) {
+      refIds.current = refIds.current.filter((i) => i !== id);
+    } else {
+      refIds.current?.push(id);
+    }
+    forceRerender();
+  }, []);
 
   const onClick = useCallback((e: MouseEvent) => {
     e.preventDefault();
@@ -45,19 +41,24 @@ export function Content({ data, isOpen }: Props) {
         render count: <strong>{++refRenderCount.current}</strong>
       </p>
       <ul style={styles.ul}>
-        {data.map((item) => (
-          <li key={item.id} style={styles.item}>
-            <a
-              style={styles.title}
-              href="#"
-              data-id={item.id}
-              onClick={onClick}
-            >
-              {item.title}
-            </a>
-            {refIds.current?.includes(item.id) && <p>{item.description}</p>}
-          </li>
-        ))}
+        {data.map((item) => {
+          const isInIds = refIds.current?.includes(item.id);
+          const isShown = isOpen ? !isInIds : isInIds;
+
+          return (
+            <li key={item.id} style={styles.item}>
+              <a
+                style={styles.title}
+                href="#"
+                data-id={item.id}
+                onClick={onClick}
+              >
+                {item.title}
+              </a>
+              {isShown && <p>{item.description}</p>}
+            </li>
+          );
+        })}
       </ul>
     </>
   );

@@ -16,7 +16,8 @@ function App() {
   );
 
   const onSearch = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => setSearch(e.target.value),
+    (e: ChangeEvent<HTMLInputElement>) =>
+      setSearch(e.target.value.toLocaleLowerCase().trim()),
     []
   );
 
@@ -25,7 +26,7 @@ function App() {
       <div>
         <input type="text" placeholder="Search" onChange={onSearch} />
       </div>
-      <Content data={dataFiltered} />
+      <Content data={dataFiltered} isOpen={Boolean(search.length)} />
     </>
   );
 }

@@ -19,7 +19,7 @@ export const Content = forwardRef<
   Props
 >(({ data }, ref) => {
   const refRenderCount = useRef(0);
-  const [ids, setIds] = useState<Props['data']['id'][]>([]);
+  const [ids, setIds] = useState<Props['data'][number]['id'][]>([]);
 
   const toggleId = useCallback(
     (id: string) =>

@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef, MouseEventHandler } from 'react';
+import { useCallback, useState, useRef, MouseEvent } from 'react';
 import type { Data } from './types';
 
 import styles from './Content.styles';
@@ -19,7 +19,7 @@ export function Content({ data }: Props) {
     []
   );
 
-  const onClick = useCallback<MouseEventHandler<HTMLAnchorElement>>((e) => {
+  const onClick = useCallback((e: MouseEvent) => {
     e.preventDefault();
     toggleId(e.target?.dataset.id);
   }, []);

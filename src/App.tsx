@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { Content } from './Content';
 import { data } from './data';
 
@@ -15,14 +15,15 @@ function App() {
     [search]
   );
 
+  const onSearch = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setSearch(e.target.value),
+    []
+  );
+
   return (
     <>
       <div>
-        <input
-          type="text"
-          placeholder="Search"
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <input type="text" placeholder="Search" onChange={onSearch} />
       </div>
       <Content data={dataFiltered} />
     </>

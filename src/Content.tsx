@@ -1,28 +1,16 @@
-import { useCallback, useState, useRef, MouseEventHandler } from 'react';
+import { useRef, MouseEvent } from 'react';
 import type { Data } from './types';
 
 import styles from './Content.styles';
 
 type Props = {
   data: Data;
+  openIds: Data[number]['id'][];
+  onRowClick: (id: Data[number]['id']) => unknown;
 };
 
-export function Content({ data }: Props) {
+export function Content({ data, openIds, onRowClick }: Props) {
   const refRenderCount = useRef(0);
-  const [ids, setIds] = useState<Props['data']['id'][]>([]);
-
-  const toggleId = useCallback(
-    (id: string) =>
-      setIds((ids) =>
-        ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id]
-      ),
-    []
-  );
-
-  const onClick = useCallback<MouseEventHandler<HTMLAnchorElement>>((e) => {
-    e.preventDefault();
-    toggleId(e.target?.dataset.id);
-  }, []);
 
   return (
     <>
@@ -36,11 +24,11 @@ export function Content({ data }: Props) {
               style={styles.title}
               href="#"
               data-id={item.id}
-              onClick={onClick}
+              onClick={() => onRowClick(item.id)}
             >
               {item.title}
             </a>
-            {ids.includes(item.id) && <p>{item.description}</p>}
+            {openIds.includes(item.id) && <p>{item.description}</p>}
           </li>
         ))}
       </ul>

@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef, MouseEvent, useEffect } from 'react';
+import { useCallback, useState, useRef, MouseEvent } from 'react';
 import type { Data } from './types';
 
 import styles from './Content.styles';
@@ -10,13 +10,27 @@ type Props = {
 
 export function Content({ data, isOpen }: Props) {
   const refRenderCount = useRef(0);
-  const [ids, setIds] = useState<Props['data']['id'][]>([]);
+  const [_, rerender] = useState(0);
+  const forceRerender = useCallback(() => rerender(Math.random()), []);
+
+  const refData = useRef<Props['data']>();
+  const refIds = useRef<Props['data'][number]['id'][]>();
+
+  if (refData.current !== data) {
+    refIds.current = isOpen ? data.map((item) => item.id) : [];
+    refData.current = data;
+  }
 
   const toggleId = useCallback(
-    (id: string) =>
-      setIds((ids) =>
-        ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id]
-      ),
+    (id: string) => {
+      if (refIds.current?.includes(id)) {
+        refIds.current = refIds.current.filter((i) => i !== id);
+      } else {
+        refIds.current?.push(id);
+      }
+      forceRerender();
+    },
+
     []
   );
 
@@ -24,10 +38,6 @@ export function Content({ data, isOpen }: Props) {
     e.preventDefault();
     toggleId(e.target?.dataset.id);
   }, []);
-
-  useEffect(() => {
-    setIds(isOpen ? data.map((item) => item.id) : []);
-  }, [data, isOpen]);
 
   return (
     <>
@@ -45,7 +55,7 @@ export function Content({ data, isOpen }: Props) {
             >
               {item.title}
             </a>
-            {ids.includes(item.id) && <p>{item.description}</p>}
+            {refIds.current?.includes(item.id) && <p>{item.description}</p>}
           </li>
         ))}
       </ul>

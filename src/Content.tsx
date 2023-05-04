@@ -1,4 +1,11 @@
-import { useCallback, useState, useRef, MouseEvent } from 'react';
+import {
+  useCallback,
+  useState,
+  useRef,
+  MouseEvent,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import type { Data } from './types';
 
 import styles from './Content.styles';
@@ -7,7 +14,10 @@ type Props = {
   data: Data;
 };
 
-export function Content({ data }: Props) {
+export const Content = forwardRef<
+  { openAll: () => unknown; closeAll: () => unknown },
+  Props
+>(({ data }, ref) => {
   const refRenderCount = useRef(0);
   const [ids, setIds] = useState<Props['data']['id'][]>([]);
 
@@ -23,6 +33,17 @@ export function Content({ data }: Props) {
     e.preventDefault();
     toggleId(e.target?.dataset.id);
   }, []);
+
+  const openAll = useCallback(
+    () => setIds(data.map((item) => item.id)),
+    [data]
+  );
+  const closeAll = useCallback(() => setIds([]), []);
+
+  useImperativeHandle(ref, () => ({
+    openAll,
+    closeAll,
+  }));
 
   return (
     <>
@@ -46,4 +67,4 @@ export function Content({ data }: Props) {
       </ul>
     </>
   );
-}
+});

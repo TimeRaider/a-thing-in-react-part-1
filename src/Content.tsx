@@ -1,4 +1,4 @@
-import { useRef, MouseEvent } from 'react';
+import { useRef } from 'react';
 import type { Data } from './types';
 
 import styles from './Content.styles';
